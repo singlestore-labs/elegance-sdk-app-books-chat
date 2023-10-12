@@ -1,0 +1,46 @@
+.dotFlashing {
+  position: relative;
+  width: 1em;
+  height: 1em;
+  border-radius: 100%;
+  background-color: currentColor;
+  color: currentColor;
+  animation: dotFlashing 0.8s infinite linear alternate;
+  animation-delay: 0.5s;
+  margin-left: 1.5em;
+}
+
+.dotFlashing::before,
+.dotFlashing::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-color: currentColor;
+  color: currentColor;
+  animation: inherit;
+}
+
+.dotFlashing::before {
+  left: 1.5em;
+  animation-delay: 0.8s;
+}
+
+.dotFlashing::after {
+  left: -1.5em;
+  animation-delay: 0s;
+}
+
+@keyframes dotFlashing {
+  0% {
+    background-color: currentColor;
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.25;
+  }
+}
