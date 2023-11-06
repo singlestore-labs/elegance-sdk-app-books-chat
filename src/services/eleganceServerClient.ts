@@ -8,8 +8,10 @@ export function getEleganceServerClient(connectionType: ConnectionTypes) {
         uri: process.env.KAI_URI ?? "",
         database: "books_chat_kai"
       },
-      openai: {
-        apiKey: process.env.OPENAI_API_KEY
+      ai: {
+        openai: {
+          apiKey: process.env.OPENAI_API_KEY
+        }
       }
     });
   } else {
@@ -20,8 +22,10 @@ export function getEleganceServerClient(connectionType: ConnectionTypes) {
         password: process.env.DB_PASSWORD,
         database: "books_chat_mysql"
       },
-      openai: {
-        apiKey: process.env.OPENAI_API_KEY
+      ai: {
+        openai: {
+          apiKey: process.env.OPENAI_API_KEY
+        }
       }
     });
   }
