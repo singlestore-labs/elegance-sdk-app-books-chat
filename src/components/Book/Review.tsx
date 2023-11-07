@@ -60,13 +60,13 @@ export function BookReview({ className, ...props }: BookReviewProps) {
         });
       } else {
         getEleganceClient("mysql").requests.updateMany({
-          table: "books_chat_mysql.books",
+          table: "books",
           where: `id = '${book.id}'`,
           set: `reviews = ${reviews}, rating = ${rating}`
         });
 
         await getEleganceClient("mysql").requests.updateMany({
-          table: "books_chat_mysql.users",
+          table: "users",
           where: `id = '${user.id}'`,
           set: `reviews = '${JSON.stringify(updatedUser.reviews)}'`
         });

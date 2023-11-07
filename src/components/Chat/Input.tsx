@@ -56,7 +56,7 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
           });
         } else {
           completion = await executeChatCompletion({
-            table: `books_chat_mysql.${embeddingCollectionName}`,
+            table: embeddingCollectionName,
             prompt: value,
             minSimilarity: 0.6,
             maxContextLength: 5000

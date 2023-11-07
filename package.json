@@ -11,7 +11,7 @@
     "dev:scripts": "NODE_ENV=development npx tsx watch scripts/*.ts"
   },
   "dependencies": {
-    "@singlestore/elegance-sdk": "^0.0.8",
+    "@singlestore/elegance-sdk": "^0.0.9",
     "@types/node": "20.6.5",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",

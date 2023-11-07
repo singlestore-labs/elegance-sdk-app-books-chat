@@ -57,17 +57,12 @@ export function BookUploader({ className, ...props }: BookUploaderProps) {
 
                 book = await executeInsertBook({ collection: "books", value: book, generateId: true });
               } else {
-                const table = `books_chat_mysql.${collection}`;
                 const { embeddings, subjects, ..._book } = book;
 
-                await getEleganceClient("mysql").requests.query({
-                  query: `CREATE TABLE ${table} (
-                    text TEXT,
-                    embedding LONGBLOB NOT NULL
-                  )`.trim()
+                await executeCreateAndInsertBookEmbeddings({
+                  table: collection,
+                  dataURL: event.target.result as string
                 });
-
-                await executeCreateAndInsertBookEmbeddings({ table, dataURL: event.target.result as string });
 
                 const mysqlBook = (await executeInsertBook({
                   table: "books",
