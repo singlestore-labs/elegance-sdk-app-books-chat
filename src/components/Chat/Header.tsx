@@ -18,7 +18,7 @@ export function ChatHeader({ className, ...props }: ChatHeaderProps) {
       {...props}
       size="lg"
       className={cn(
-        "relative w-full flex-row flex-wrap items-center justify-between border-b dark:border-b-zinc-600 bg-white",
+        "relative w-full flex-row flex-wrap items-center justify-between border-b dark:border-b-zinc-600 bg-white dark:bg-zinc-700",
         className
       )}
     >

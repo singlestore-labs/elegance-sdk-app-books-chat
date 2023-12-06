@@ -109,7 +109,7 @@ async function main() {
           booksWithEmbeddings.map(book => {
             const data = book.embeddings.map(({ text, embedding }) => ({
               text,
-              embedding: kaiEleganceServerClient.openai?.helpers.embeddingToBuffer(embedding)
+              embedding: kaiEleganceServerClient.ai.embeddingToBuffer(embedding)
             }));
 
             return db.collection(book.embeddingCollectionName).insertMany(data);
@@ -234,7 +234,7 @@ async function main() {
           booksWithEmbeddings.map(book => {
             const data = book.embeddings.map(({ text, embedding }) => ({
               text,
-              embedding: mysqlEleganceServerClient.openai?.helpers.embeddingToBuffer(embedding)
+              embedding: mysqlEleganceServerClient.ai.embeddingToBuffer(embedding)
             }));
 
             return db.query(`INSERT INTO ${dbName}.${book.embeddingCollectionName} (text, embedding) VALUES ?`, [
