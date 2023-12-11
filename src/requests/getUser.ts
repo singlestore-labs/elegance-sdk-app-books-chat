@@ -22,13 +22,13 @@ export async function getUser(): Promise<User> {
     return user;
   } else {
     let user = await getEleganceClient("mysql").requests.findOne<MySQLUser>({
-      table: "users",
+      collection: "users",
       where: `id = '${userId}'`
     });
 
     if (!user || !Object.keys(user).length) {
       user = await getEleganceClient("mysql").requests.insertOne<MySQLUser>({
-        table: "users",
+        collection: "users",
         value: { ...createUser(), reviews: JSON.stringify([]) },
         generateId: true
       });

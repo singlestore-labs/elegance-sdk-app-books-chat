@@ -14,7 +14,7 @@ export async function getRecommendedBooks(connectionType: ConnectionTypes, user:
         { authors: Book["author"][]; subjects: Book["subjects"] }[]
       >({
         collection: "books",
-        pipeline: [
+        query: [
           {
             $match: { id: { $in: reviewedBookIds } }
           },
@@ -31,7 +31,7 @@ export async function getRecommendedBooks(connectionType: ConnectionTypes, user:
 
       return await getEleganceClient("kai").requests.query<Book[]>({
         collection: "books",
-        pipeline: [
+        query: [
           {
             $match: {
               $and: [

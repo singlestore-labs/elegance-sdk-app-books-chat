@@ -7,7 +7,7 @@ export async function getBooksNumber(connectionType: ConnectionTypes) {
       return (
         await getEleganceClient("kai").requests.query<{ number: number }[]>({
           collection: "books",
-          pipeline: [
+          query: [
             {
               $group: {
                 _id: null,

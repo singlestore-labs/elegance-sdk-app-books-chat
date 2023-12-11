@@ -8,7 +8,7 @@ export async function getBooksWithEmbeddings(connectionType: ConnectionTypes): P
     if (connectionType === "kai") {
       return getEleganceClient("kai").requests.query<Book[]>({
         collection: "books",
-        pipeline: [
+        query: [
           {
             $match: {
               embeddingCollectionName: {

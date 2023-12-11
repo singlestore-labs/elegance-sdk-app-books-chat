@@ -10,7 +10,7 @@ export async function getRandomAuthorBooksNumber(
       return (
         await getEleganceClient("kai").requests.query<{ name: Book["author"]; booksNumber: number }[]>({
           collection: "books",
-          pipeline: [
+          query: [
             {
               $group: {
                 _id: "$author",
