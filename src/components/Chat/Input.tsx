@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
+import { SearchChatCompletionResult } from "@singlestore/elegance-sdk/types";
 import { Defined } from "@/root/types";
 import { ComponentProps } from "@/types";
 import { chatMessagesState } from "@/state/chatMessages";
@@ -11,7 +12,6 @@ import { chatState } from "@/state/chat";
 import { Card, CardProps } from "../Card";
 import { ChatInputForm, ChatInputFormProps, ChatInputFormRef } from "./InputForm";
 import { connectionTypeState } from "@/state/connectionType";
-import { ChatCompletionResult } from "@singlestore/elegance-sdk/types";
 
 export type ChatInputProps = ComponentProps<CardProps>;
 
@@ -19,7 +19,7 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
   const inputFormRef = useRef<ChatInputFormRef>(null);
 
   const connectionType = connectionTypeState.useValue();
-  const chatCompletion = getEleganceClient(connectionType).hooks.useChatCompletion();
+  const chatCompletion = getEleganceClient(connectionType).hooks.useSearchChatCompletion();
   const { execute: executeChatCompletion } = chatCompletion;
   const isAILoading = chatState.useIsAILoading();
   const setIsAILoading = chatState.useSetIsAILoading();
@@ -45,7 +45,7 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
           };
         });
 
-        let completion: ChatCompletionResult | undefined = undefined;
+        let completion: SearchChatCompletionResult | undefined = undefined;
 
         if (connectionType === "kai") {
           completion = await executeChatCompletion({
@@ -56,7 +56,7 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
           });
         } else {
           completion = await executeChatCompletion({
-            table: embeddingCollectionName,
+            collection: embeddingCollectionName,
             prompt: value,
             minSimilarity: 0.6,
             maxContextLength: 5000
@@ -72,7 +72,7 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
               ...messages,
               [embeddingCollectionName]: [
                 ...bookMessages,
-                createMessage({ id, author: "AI", content: completion!.content })
+                createMessage({ id, author: "AI", content: completion!.content! })
               ]
             };
           });

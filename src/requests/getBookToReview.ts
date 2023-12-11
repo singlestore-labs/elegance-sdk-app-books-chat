@@ -11,7 +11,7 @@ export async function getBookToReview(connectionType: ConnectionTypes, user: Use
       return (
         await getEleganceClient("kai").requests.query<Book[]>({
           collection: "books",
-          pipeline: [{ $match: { id: { $nin: reviewedBooks } } }, { $sample: { size: 1 } }]
+          query: [{ $match: { id: { $nin: reviewedBooks } } }, { $sample: { size: 1 } }]
         })
       )[0];
     } else {

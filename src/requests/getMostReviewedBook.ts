@@ -9,7 +9,7 @@ export async function getMostReviewedBook(connectionType: ConnectionTypes) {
       return (
         await getEleganceClient("kai").requests.query<Book[]>({
           collection: "books",
-          pipeline: [{ $sort: { reviews: -1, title: 1 } }, { $limit: 1 }]
+          query: [{ $sort: { reviews: -1, title: 1 } }, { $limit: 1 }]
         })
       )[0];
     } else {

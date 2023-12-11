@@ -60,12 +60,12 @@ export function BookUploader({ className, ...props }: BookUploaderProps) {
                 const { embeddings, subjects, ..._book } = book;
 
                 await executeCreateAndInsertBookEmbeddings({
-                  table: collection,
+                  collection,
                   dataURL: event.target.result as string
                 });
 
                 const mysqlBook = (await executeInsertBook({
-                  table: "books",
+                  collection: "books",
                   value: { ..._book, subjects: "" } as any,
                   generateId: true
                 })) as any;
