@@ -72,7 +72,9 @@ async function main() {
       console.log("Kai: Validating database...");
 
       const dbCollectionsMeta = await Promise.all(
-        (await db.collections()).map(async collection => [collection.collectionName, await collection.countDocuments()])
+        (
+          await db().collections()
+        ).map(async collection => [collection.collectionName, await collection.countDocuments()])
       );
 
       return allCollectionNames.every(name => {
@@ -83,7 +85,7 @@ async function main() {
 
     async function resetDatabase() {
       console.log("Kai: Database reset...");
-      await db.dropDatabase();
+      await db().dropDatabase();
       await createCollections();
       await insertData();
       console.log("Kai: The database setup is complete.");
@@ -91,18 +93,18 @@ async function main() {
       async function createCollections() {
         console.log("Kai: Creating collections...");
 
-        await Promise.all(Object.values(collectionNames).map(name => db.createCollection(name)));
+        await Promise.all(Object.values(collectionNames).map(name => db().createCollection(name)));
 
         await Promise.all(
           collectionNamesWithEmbeddings.map(name => {
-            return db.createCollection(name, { columns: [{ id: "embedding", type: "LONGBLOB NOT NULL" }] } as any);
+            return db().createCollection(name, { columns: [{ id: "embedding", type: "LONGBLOB NOT NULL" }] } as any);
           })
         );
       }
 
       async function insertData() {
         console.log("Kai: Inserting books...");
-        await db.collection(collectionNames.books).insertMany(books);
+        await db().collection(collectionNames.books).insertMany(books);
 
         console.log("Kai: Inserting embeddings...");
         await Promise.all(
@@ -112,12 +114,12 @@ async function main() {
               embedding: kaiEleganceServerClient.ai.embeddingToBuffer(embedding)
             }));
 
-            return db.collection(book.embeddingCollectionName).insertMany(data);
+            return db().collection(book.embeddingCollectionName).insertMany(data);
           })
         );
 
         console.log("Kai: Inserting a user sample");
-        await db.collection(collectionNames.users).insertOne(sampleUser);
+        await db().collection(collectionNames.users).insertOne(sampleUser);
       }
     }
   }
@@ -138,7 +140,7 @@ async function main() {
     });
 
     const { connection } = mysqlEleganceServerClient;
-    const db = connection.promise();
+    const { tablePath } = connection;
 
     const isDatabaseValid = await validateDatabase();
 
@@ -153,7 +155,7 @@ async function main() {
       try {
         const allTablesMeta = await Promise.all(
           allCollectionNames.map(async name => {
-            const count = ((await db.query(`SELECT COUNT(*) FROM ${dbName}.${name}`))[0] as any)[0];
+            const count = ((await connection.query(`SELECT COUNT(*) FROM ${tablePath(name)}`))[0] as any)[0];
             return [name, Object.values(count)[0]];
           })
         );
@@ -176,17 +178,19 @@ async function main() {
 
       async function dropTables() {
         const tables = (
-          await db.query(`SELECT table_name AS name FROM information_schema.tables WHERE table_schema = '${dbName}'`)
+          await connection.query(
+            `SELECT table_name AS name FROM information_schema.tables WHERE table_schema = '${dbName}'`
+          )
         )[0] as { name: string }[];
 
-        await Promise.all(tables.map(({ name }) => db.query(`DROP TABLE IF EXISTS ${dbName}.${name}`)));
+        await Promise.all(tables.map(({ name }) => connection.query(`DROP TABLE IF EXISTS ${tablePath(name)}`)));
       }
 
       async function createCollections() {
         console.log("MySQL: Creating tables...");
 
         await Promise.all([
-          db.query(`CREATE TABLE ${dbName}.${collectionNames.books} (
+          connection.query(`CREATE TABLE ${tablePath(collectionNames.books)} (
             id VARCHAR(255) PRIMARY KEY,
             title VARCHAR(1000) NOT NULL,
             description TEXT,
@@ -199,13 +203,13 @@ async function main() {
             subjects TEXT
           )`),
 
-          db.query(`CREATE TABLE ${dbName}.${collectionNames.users} (
+          connection.query(`CREATE TABLE ${tablePath(collectionNames.users)} (
             id VARCHAR(255) PRIMARY KEY,
             reviews JSON
           )`),
 
           collectionNamesWithEmbeddings.map(name => {
-            return db.query(`CREATE TABLE ${dbName}.${name} (
+            return connection.query(`CREATE TABLE ${tablePath(name)} (
               text TEXT,
               embedding LONGBLOB NOT NULL
             )`);
@@ -224,8 +228,8 @@ async function main() {
           };
         });
 
-        await db.query(
-          `INSERT INTO ${dbName}.${collectionNames.books} (${Object.keys(mysqlBooks[0]).join(", ")}) VALUES ?`,
+        await connection.query(
+          `INSERT INTO ${tablePath(collectionNames.books)} (${Object.keys(mysqlBooks[0]).join(", ")}) VALUES ?`,
           [mysqlBooks.map(Object.values)]
         );
 
@@ -237,14 +241,15 @@ async function main() {
               embedding: mysqlEleganceServerClient.ai.embeddingToBuffer(embedding)
             }));
 
-            return db.query(`INSERT INTO ${dbName}.${book.embeddingCollectionName} (text, embedding) VALUES ?`, [
-              data.map(Object.values)
-            ]);
+            return connection.query(
+              `INSERT INTO ${tablePath(book.embeddingCollectionName)} (text, embedding) VALUES ?`,
+              [data.map(Object.values)]
+            );
           })
         );
 
         console.log("MySQL: Inserting a user sample");
-        await db.query(`INSERT INTO ${dbName}.${collectionNames.users} (id, reviews) VALUES (?, ?)`, [
+        await connection.query(`INSERT INTO ${tablePath(collectionNames.users)} (id, reviews) VALUES (?, ?)`, [
           sampleUser.id,
           JSON.stringify(sampleUser.reviews)
         ]);
