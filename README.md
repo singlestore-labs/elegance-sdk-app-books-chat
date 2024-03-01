@@ -1,3 +1,6 @@
+**Attention**: The code in this repository is intended for experimental use only and is not fully tested, documented, or supported by SingleStore. Visit the [SingleStore Forums](https://www.singlestore.com/forum/) to ask questions about this repository.
+
+
 ## Getting Started
 
 1. Sign up for [SingleStore](https://www.singlestore.com/) and create `books_chat_mysql` and/or `books_chat_kai` databases
