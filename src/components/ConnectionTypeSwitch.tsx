@@ -9,22 +9,35 @@ export type ConnectionTypeSwitchProps = ComponentProps<"div">;
 
 type Option = { label: ReactNode; value: ConnectionTypes };
 
-const connectionTypes = (process.env.NEXT_PUBLIC_CONNECTION_TYPE ?? "mysql").split(",");
+const connectionTypes = (
+  process.env.NEXT_PUBLIC_CONNECTION_TYPE ?? "mysql"
+).split(",");
 
 const options = [
   { label: "MySQL", value: "mysql" },
-  { label: "Kai", value: "kai" }
-].filter(option => connectionTypes.includes(option.value)) as Option[];
+  { label: "Kai", value: "kai" },
+].filter((option) => connectionTypes.includes(option.value)) as Option[];
 
-export function ConnectionTypeSwitch({ className, ...props }: ConnectionTypeSwitchProps) {
+export function ConnectionTypeSwitch({
+  className,
+  ...props
+}: ConnectionTypeSwitchProps) {
   const [connectionType, setConnectionType] = connectionTypeState.useState();
 
   return (
-    <Card {...props} variant="1" size="md" className={cn("flex-row px-2", className)}>
+    <Card
+      {...props}
+      variant="1"
+      size="md"
+      className={cn("flex-row px-2", className)}
+    >
       {options.map(({ label, value }) => {
         const isActive = connectionType === value;
         return (
-          <label key={value} className={cn("text-sm font-medium", !isActive && "cursor-pointer")}>
+          <label
+            key={value}
+            className={cn("text-sm font-medium", !isActive && "cursor-pointer")}
+          >
             <input
               type="radio"
               value={value}
@@ -35,8 +48,8 @@ export function ConnectionTypeSwitch({ className, ...props }: ConnectionTypeSwit
             <span
               className={cn(
                 "text-s2-gray-600 px-2 py-1",
-                !isActive && "hover:text-s2-indigo-600 dark:hover:text-s2-indigo-500",
-                isActive && "bg-s2-indigo-600 rounded-md  text-white"
+                !isActive && "hover:text-primary",
+                isActive && "bg-primary rounded-md  text-white"
               )}
             >
               {label}

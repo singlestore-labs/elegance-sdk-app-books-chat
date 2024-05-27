@@ -2,14 +2,17 @@ import { forwardRef } from "react";
 import { ComponentProps, PropsByValues } from "@/types";
 import { cn } from "@/utils";
 
-export type TextareaProps = ComponentProps<"textarea", { variant?: "1"; size?: "md" }>;
+export type TextareaProps = ComponentProps<
+  "textarea",
+  { variant?: "1"; size?: "md" }
+>;
 
-const propsByValues: PropsByValues<TextareaProps> = props => {
+const propsByValues: PropsByValues<TextareaProps> = (props) => {
   let className = "";
 
   if (props?.variant === "1") {
     className +=
-      " placeholder:text-s2-gray-600 hover:bg-s2-gray-100 focus:border-s2-indigo-600 focus:bg-white rounded-lg border bg-white outline-none dark:bg-zinc-700 dark:border-zinc-600 dark:focus:border-s2-indigo-600";
+      " placeholder:text-s2-gray-600 focus:border-primary focus:bg-card rounded-lg border outline-none bg-card border-border";
   }
 
   if (props?.size === "md") {

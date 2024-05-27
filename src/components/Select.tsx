@@ -1,6 +1,13 @@
 "use client";
 
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ComponentProps } from "@/types";
 import { cn } from "@/utils";
 import { Button } from "./Button";
@@ -33,7 +40,7 @@ export function Select({
 }: SelectProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const activeOption = options.find(option => option.value === value);
+  const activeOption = options.find((option) => option.value === value);
   const label = value ? activeOption?.label : placeholder;
 
   const handleOptionClick = useCallback(
@@ -53,17 +60,17 @@ export function Select({
   }, [isDisabled]);
 
   const dropdownChildren = useMemo(() => {
-    return options.map(option => {
+    return options.map((option) => {
       const isActive = activeOption?.value === option.value;
 
       return (
         <Button
           key={option.value}
-          variant="3"
+          variant="2"
           size="sm"
           className={cn(
-            "w-full flex-shrink-0 flex-grow-0 basis-auto justify-start border-t first:border-t-0 dark:border-t-zinc-600",
-            isActive && "[&>*]:text-indigo-600 dark:[&>*]:text-indigo-500"
+            "w-full flex-shrink-0 flex-grow-0 basis-auto justify-start border-y-0 border-x-0 rounded-none first:border-t-0 border-t border-border",
+            isActive && "[&>*]:text-primary"
           )}
           disabled={isActive}
           withDisabledStyle={false}
@@ -75,14 +82,22 @@ export function Select({
     });
   }, [activeOption?.value, options, handleOptionClick]);
 
-  const toggleDropdown = (isOpen?: boolean) => setIsDropdownOpen(is => (isOpen !== undefined ? isOpen : !is));
+  const toggleDropdown = (isOpen?: boolean) =>
+    setIsDropdownOpen((is) => (isOpen !== undefined ? isOpen : !is));
 
   return (
-    <div {...props} ref={rootRef} className={cn("relative h-12 w-80", className)}>
+    <div
+      {...props}
+      ref={rootRef}
+      className={cn("relative h-12 w-80", className)}
+    >
       <Button
         variant="2"
         size="sm"
-        className={cn("toggler h-full w-full font-medium", value && "justify-start text-left")}
+        className={cn(
+          "toggler h-full w-full font-medium",
+          value && "justify-start text-left"
+        )}
         onClick={() => toggleDropdown()}
         disabled={isDisabled}
         withDisabledStyle={false}

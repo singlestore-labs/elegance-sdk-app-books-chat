@@ -6,22 +6,17 @@ export type ButtonProps = ComponentProps<
   { variant?: "1" | "2" | "3"; size?: "md" | "sm"; withDisabledStyle?: boolean }
 >;
 
-const propsByValues: PropsByValues<ButtonProps> = props => {
+const propsByValues: PropsByValues<ButtonProps> = (props) => {
   let className = "";
 
   if (props?.variant === "1") {
     className +=
-      " font-medium text-white bg-s2-indigo-600 hover:bg-s2-indigo-700 active:bg-s2-indigo-800 border-none outline-none";
+      " font-medium text-white bg-primary hover:bg-primary/95 active:bg-primary/90 border-none outline-none";
   }
 
   if (props?.variant === "2") {
     className +=
-      " font-medium hover:bg-s2-gray-100 active:bg-s2-gray-200 rounded-lg border bg-white dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 dark:active:bg-zinc-500";
-  }
-
-  if (props?.variant === "3") {
-    className +=
-      " hover:bg-s2-gray-100 active:bg-s2-gray-200 dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 dark:active:bg-zinc-500";
+      " font-medium bg-card rounded-lg border border-border hover:bg-accent";
   }
 
   if (props?.size === "sm") {
@@ -39,7 +34,14 @@ const propsByValues: PropsByValues<ButtonProps> = props => {
   return { className };
 };
 
-export function Button({ className, variant, size, disabled, withDisabledStyle = true, ...props }: ButtonProps) {
+export function Button({
+  className,
+  variant,
+  size,
+  disabled,
+  withDisabledStyle = true,
+  ...props
+}: ButtonProps) {
   const _props = propsByValues({ variant, size, disabled, withDisabledStyle });
 
   return (

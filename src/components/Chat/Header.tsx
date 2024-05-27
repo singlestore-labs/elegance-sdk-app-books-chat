@@ -18,12 +18,15 @@ export function ChatHeader({ className, ...props }: ChatHeaderProps) {
       {...props}
       size="lg"
       className={cn(
-        "relative w-full flex-row flex-wrap items-center justify-between border-b dark:border-b-zinc-600 bg-white dark:bg-zinc-700",
+        "relative w-full flex-row flex-wrap items-center justify-between border-b border-border bg-card",
         className
       )}
     >
       <ConnectionTypeSwitch />
-      <BookSelect isDisabled={isAILoading} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      <BookSelect
+        isDisabled={isAILoading}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      />
       <DarkModeSwitch />
     </Card>
   );

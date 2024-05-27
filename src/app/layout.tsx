@@ -5,14 +5,23 @@ import { cn } from "@/utils";
 import { StateProvider } from "@/state/StateProvider";
 import { Footer } from "@/components/Footer";
 import { DarkModeProvider } from "@/components/DarkModeProvider";
+import { APP_NAME } from "@/constants/config";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ weight: ["400", "500", "600"], subsets: ["latin"] });
 
+const title = `SingleStore | ${APP_NAME}`;
 export const metadata: Metadata = {
-  title: "SingleStore Elegance SDK"
+  title: {
+    default: title,
+    template: `${title} - %s`,
+  },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body
@@ -23,8 +32,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       >
         <StateProvider>
           <DarkModeProvider className="flex w-full max-w-full flex-1 flex-col">
-            <div className="bg-s2-gray-200 text-s2-gray-800 flex w-full max-w-full flex-1 flex-col dark:bg-zinc-800 dark:text-white">
-              <main className="flex w-full max-w-full flex-1 flex-col">{children}</main>
+            <div className="bg-background text-foreground flex w-full max-w-full flex-1 flex-col">
+              <main className="flex w-full max-w-full flex-1 flex-col">
+                {children}
+              </main>
               <Footer />
             </div>
           </DarkModeProvider>

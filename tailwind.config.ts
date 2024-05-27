@@ -4,12 +4,29 @@ const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}"
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: "class",
   theme: {
     extend: {
       colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        border: "hsl(var(--border))",
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+        },
+
         s2: {
           indigo: {
             50: "#F7F6FE",
@@ -21,7 +38,7 @@ const config: Config = {
             600: "#553ACF",
             700: "#472EB7",
             800: "#3A249E",
-            900: "#2F206E"
+            900: "#2F206E",
           },
 
           gray: {
@@ -34,12 +51,12 @@ const config: Config = {
             600: "#908E94",
             700: "#777582",
             800: "#4C4A57",
-            900: "#1B1A21"
-          }
-        }
-      }
-    }
-  }
+            900: "#1B1A21",
+          },
+        },
+      },
+    },
+  },
 };
 
 export default config;
