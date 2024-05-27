@@ -10,7 +10,11 @@ import { getEleganceClient } from "@/services/eleganceClient";
 import { activeChatBookState } from "@/state/activeChatBook";
 import { chatState } from "@/state/chat";
 import { Card, CardProps } from "../Card";
-import { ChatInputForm, ChatInputFormProps, ChatInputFormRef } from "./InputForm";
+import {
+  ChatInputForm,
+  ChatInputFormProps,
+  ChatInputFormRef,
+} from "./InputForm";
 import { connectionTypeState } from "@/state/connectionType";
 
 export type ChatInputProps = ComponentProps<CardProps>;
@@ -19,29 +23,35 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
   const inputFormRef = useRef<ChatInputFormRef>(null);
 
   const connectionType = connectionTypeState.useValue();
-  const chatCompletion = getEleganceClient(connectionType).hooks.useSearchChatCompletion();
+  const chatCompletion =
+    getEleganceClient(connectionType).hooks.useSearchChatCompletion();
   const { execute: executeChatCompletion } = chatCompletion;
   const isAILoading = chatState.useIsAILoading();
   const setIsAILoading = chatState.useSetIsAILoading();
   const setChatMessages = chatMessagesState.useSetValue();
-  const embeddingCollectionName = activeChatBookState.useEmbeddingCollectionName();
+  const embeddingCollectionName =
+    activeChatBookState.useEmbeddingCollectionName();
 
   const handleFormSubmit = useCallback<Defined<ChatInputFormProps["onSubmit"]>>(
-    async value => {
+    async (value) => {
       try {
         value = value.trim();
+        const systemRole = "You are a helpful assistant";
 
         if (!embeddingCollectionName || !value.length) return;
 
         setIsAILoading(true);
 
-        setChatMessages(messages => {
+        setChatMessages((messages) => {
           const bookMessages = messages[embeddingCollectionName] ?? [];
           const id = (bookMessages[bookMessages.length - 1]?.id ?? 0) + 1;
 
           return {
             ...messages,
-            [embeddingCollectionName]: [...bookMessages, createMessage({ id, author: "you", content: value })]
+            [embeddingCollectionName]: [
+              ...bookMessages,
+              createMessage({ id, author: "you", content: value }),
+            ],
           };
         });
 
@@ -51,20 +61,22 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
           completion = await executeChatCompletion({
             collection: embeddingCollectionName,
             prompt: value,
+            systemRole,
             minSimilarity: 0.6,
-            maxContextLength: 5000
+            maxContextLength: 5000,
           });
         } else {
           completion = await executeChatCompletion({
             collection: embeddingCollectionName,
             prompt: value,
+            systemRole,
             minSimilarity: 0.6,
-            maxContextLength: 5000
+            maxContextLength: 5000,
           });
         }
 
         if (completion?.content) {
-          setChatMessages(messages => {
+          setChatMessages((messages) => {
             const bookMessages = messages[embeddingCollectionName] ?? [];
             const id = (bookMessages[bookMessages.length - 1]?.id ?? 0) + 1;
 
@@ -72,8 +84,12 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
               ...messages,
               [embeddingCollectionName]: [
                 ...bookMessages,
-                createMessage({ id, author: "AI", content: completion!.content! })
-              ]
+                createMessage({
+                  id,
+                  author: "AI",
+                  content: completion!.content!,
+                }),
+              ],
             };
           });
         }
@@ -84,7 +100,13 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
         setIsAILoading(false);
       }
     },
-    [embeddingCollectionName, setIsAILoading, setChatMessages, executeChatCompletion, connectionType]
+    [
+      embeddingCollectionName,
+      setIsAILoading,
+      setChatMessages,
+      executeChatCompletion,
+      connectionType,
+    ]
   );
 
   useEffect(() => {
@@ -96,7 +118,10 @@ export function ChatInput({ className, ...props }: ChatInputProps) {
       {...props}
       variant="1"
       size="md"
-      className={cn("relative w-full flex-shrink-0 overflow-hidden border-none px-0 py-0", className)}
+      className={cn(
+        "relative w-full flex-shrink-0 overflow-hidden border-none px-0 py-0",
+        className
+      )}
     >
       <ChatInputForm
         ref={inputFormRef}
